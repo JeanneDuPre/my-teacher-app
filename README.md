@@ -1,50 +1,42 @@
-# Welcome to your Expo app 👋
+TODO
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Screens:
 
-## Get started
+1. Anbindung an Daten
+2. - funktioniert nicht -> Modal (ToDo_Screen); Funktioniert im Kalendar
+3. Layout ändern:
+   a) Kalendar:
+   i. Modalscreen nur als Fenster öffnen, nicht den gesamten Bildschirm
+   ii. Modalscreen Button allgemeinen Layout anpassen
+   iii.Kalendarhintergrund auch schwarz möglich, je nach Wahl des Handys
+   Dynamisch: Events auslesen; heutige Tag markieren, die Events der nächsten 14 Tage anzeigen
 
-1. Install dependencies
+   Layout alle:
 
-   ```bash
-   npm install
-   ```
+   1. - umranden in Schwarz
 
-2. Start the app
+   Trello-Screen: TODO
 
-   ```bash
-    npx expo start
-   ```
+   1. Auswahl der Lerngruppen aktivieren
+   2. jeweilige Ziele der Lerngruppe anzeigen
+   3. Layout anpassen
+   4. Items ancklickbar machen-> löschen oder zu erledigt hinzufügen -> erledigt als unterer Container hinzufügen
 
-In the output, you'll find options to open the app in a
+   Kalendar-Screen: TODO
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   1. Modal anpassen:
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+      - Fragen, ob Event, ToDo, KA, LEK
 
-## Get a fresh project
+        - Event: Datum, Uhrzeit, Ort, Titel, Inhalt, Bild hochladen, Einladung von SL, KK (optional)
+        - ToDo: Datum, Uhrzeit (optional), Ort (optional), Titel, Inhalt, Klasse (optional), weitere Lehrer (optional), Ziel (optional), Bild hochladen (optional)
 
-When you're ready, run:
+        - KA: Datum, Uhrzeit, Raum, Klasse, Fach -> Anzeige, ob überhaupt möglich ist (grün, gelb oder rote Punkte für die Tage oder die Woche?)
+        - LEK: Datum, Uhrzeit, Raum, Klasse, Fach
+          -> Button "Cancel, Save Changes"
 
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+   2. heutiger Tag im Kalendar anzeigen
+   3. Ferien für Berlin eintragen (automatisch) SPÄTER für ADMIN auslagern
+   4. unter anstehende Events-> Blog anstehende KA in deinen Lerngruppen-> diese Woche, nächste Woche, übernächste Woche
+   5. anklicken von anstehenden Events möglich, um sie zu bearbeiten oder zu löschen
+   6. Push-Benachrichtigung, wenn man zu einem Event eingeladen wurde

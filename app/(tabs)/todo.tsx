@@ -1,210 +1,224 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  TextInput,
-  Button,
 } from "react-native";
+import { useRouter } from "expo-router";
 
-type Task = {
-  title: string;
-  info?: string;
-  date?: string;
-};
+const groups = [
+  { name: "Sport 8c", color: "#479e94" },
+  { name: "Sport 10d", color: "#d15b5b" },
+  { name: "Sport 7a", color: "#f7a440" },
+  { name: "Sport 8b", color: "#4f83cc" },
+  { name: "Mathe 8c", color: "#9b59b6" },
+  { name: "Mathe 10d", color: "#e91e63" },
+];
+
+const todosToday = [
+  { group: "Sport 7a", text: "Bewertung Annette abschließen" },
+  { group: "Sport 10d", text: "Anwesenheit 10d abschließen" },
+  { group: "Sport 8b", text: "Sportzeugkontrolle abschließen" },
+];
+
+const projects = [
+  {
+    group: "Sport 8c",
+    title: "Ausflug: Skilaufen gehen",
+    members: "SuS, Frau Behrends",
+  },
+  {
+    group: "Sport 7a",
+    title: "Klassenfahrt",
+    members: "",
+  },
+];
 
 export default function TodoScreen() {
-  const [selectedGroup, setSelectedGroup] = useState("Sport 8c");
-
-  const groups = [
-    { name: "Sport 8c", color: "#479e94" },
-    { name: "Mathe 8d", color: "#d15b5b" },
-    { name: "Mathe 10e", color: "#4f83cc" },
-  ];
-
-  const [boardName] = useState("Sport 8c");
-  const [goal] = useState("Ausflug Skilaufen");
-
-  const [columns, setColumns] = useState({
-    "In Progress": [
-      { title: "Online Infos", info: "SuS", date: "31.12.24" },
-      { title: "Online Infos", info: "Lehrer", date: "31.12.24" },
-    ],
-    ToDo: [
-      { title: "Diskussion im Klassenrat", date: "06.01.25" },
-      { title: "Anfrage stellen und Anrufen", date: "07.01.25" },
-    ],
-    Done: [{ title: "Skilaufen", date: "13.01.25" }],
-  });
-
-  const renderCard = (task: Task, index: number) => (
-    <View key={index} style={styles.card}>
-      <Text style={styles.cardTitle}>{task.title}</Text>
-      {task.info && <Text style={styles.cardInfo}>{task.info}</Text>}
-      {task.date && <Text style={styles.cardDate}>{task.date}</Text>}
-    </View>
-  );
-
-  const renderColumn = (key: keyof typeof columns) => (
-    <View style={styles.column} key={key}>
-      <View style={styles.columnHeader}>
-        <Text style={styles.columnTitle}>{key}</Text>
-        <TouchableOpacity>
-          <Text style={styles.plus}>＋</Text>
-        </TouchableOpacity>
-      </View>
-      {columns[key].map(renderCard)}
-    </View>
-  );
+  const getColor = (groupName: string) =>
+    groups.find((g) => g.name === groupName)?.color || "#ccc";
+  const router = useRouter();
 
   return (
     <ScrollView style={styles.container}>
-      {/* {Header} */}
-      <View style={styles.header}>
-        <View style={styles.groupRow}>
-          {groups.map((group) => (
-            <TouchableOpacity
-              key={group.name}
-              onPress={() => setSelectedGroup(group.name)}
-              style={[
-                styles.groupBadge,
-                {
-                  backgroundColor: group.color,
-                  opacity: selectedGroup === group.name ? 1 : 0.5,
-                },
-              ]}
+      {/* ToDo's erstellen */}
+      <View style={styles.section}>
+        <View style={styles.headerRow}>
+          <Text style={styles.sectionTitle}>ToDo’s erstellen</Text>
+          <TouchableOpacity style={styles.plusButton}>
+            <Text style={styles.plus}>＋</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.badgeRow}>
+          {groups.map((g) => (
+            <View
+              key={g.name}
+              style={[styles.groupBadge, { backgroundColor: g.color }]}
             >
-              <Text style={styles.groupBadgeText}>{group.name}</Text>
-            </TouchableOpacity>
+              <Text style={styles.groupText}>{g.name}</Text>
+            </View>
           ))}
         </View>
-        <TouchableOpacity style={styles.headerButton}>
-          <Text style={styles.plus}>＋</Text>
-        </TouchableOpacity>
       </View>
 
-      {/* Ziel separat */}
-      <Text style={styles.goal}>Ziel: {goal}</Text>
-
-      {/* Columns */}
-      <View style={styles.columnsContainer}>
-        {Object.keys(columns).map((key) =>
-          renderColumn(key as keyof typeof columns)
-        )}
+      {/* ToDo's heute */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>ToDo’s HEUTE</Text>
+        <Text style={styles.date}>vom 28.12.24</Text>
+        {todosToday.map((todo, index) => (
+          <View key={index} style={styles.todoRow}>
+            <View
+              style={[
+                styles.todoGroup,
+                { backgroundColor: getColor(todo.group) },
+              ]}
+            >
+              <Text style={styles.todoGroupText}>{todo.group}</Text>
+            </View>
+            <Text>{todo.text}</Text>
+          </View>
+        ))}
       </View>
 
-      {/* Footer */}
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.cancelButton}>
-          <Text style={styles.cancelText}>Cancel</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.saveButton}>
-          <Text style={styles.saveText}>Save Changes</Text>
-        </TouchableOpacity>
+      {/* Projektplanung */}
+      <View style={styles.section}>
+        <View style={styles.headerRow}>
+          <Text style={styles.sectionTitle}>Projektplanung (Trello)</Text>
+          <TouchableOpacity>
+            <Text style={styles.plus}>＋</Text>
+          </TouchableOpacity>
+        </View>
+
+        {projects.map((p, idx) => (
+          <TouchableOpacity
+            key={idx}
+            style={styles.projectRow}
+            onPress={() =>
+              router.push({
+                pathname: "/screens/trello",
+                params: {
+                  group: p.group,
+                  title: p.title,
+                },
+              })
+            }
+          >
+            <View
+              style={[
+                styles.projectBadge,
+                { backgroundColor: getColor(p.group) },
+              ]}
+            >
+              <Text style={styles.projectGroupText}>{p.group}</Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.projectTitle}>{p.title}</Text>
+              {p.members !== "" && (
+                <Text style={styles.projectMembers}>{p.members}</Text>
+              )}
+            </View>
+          </TouchableOpacity>
+        ))}
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  groupRow: {
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 16,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    lineHeight: 24, // ggf. anpassen
+  },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  plusButton: {
+    width: 36,
+    height: 30,
+    borderWidth: 1,
+    borderColor: "black",
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  plus: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#555",
+    textAlign: "center",
+    lineHeight: 20,
+  },
+  badgeRow: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 8,
-    marginBottom: 18,
-    marginTop: 8,
   },
   groupBadge: {
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
     marginRight: 8,
-  },
-  groupBadgeText: {
-    color: "white",
-    fontWeight: "bold",
-  },
-  container: { padding: 16, backgroundColor: "white" },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-    flexWrap: "wrap",
-  },
-  boardBadge: {
-    backgroundColor: "#479e94",
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginRight: 8,
-  },
-  boardText: { color: "white", fontWeight: "bold" },
-  goal: { fontSize: 16, flex: 1 },
-  headerButton: {
-    paddingHorizontal: 8,
-  },
-  plus: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#555",
-  },
-  columnsContainer: {
-    flexDirection: "column",
-    gap: 12,
-  },
-  column: {
-    backgroundColor: "#f2f2f2",
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 12,
-  },
-  columnHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
     marginBottom: 8,
   },
-  columnTitle: {
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  card: {
-    backgroundColor: "#e4f1ef",
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 6,
-  },
-  cardTitle: {
+  groupText: {
+    color: "#fff",
     fontWeight: "bold",
   },
-  cardInfo: {
-    color: "#333",
-  },
-  cardDate: {
+  date: {
     fontSize: 12,
     color: "#666",
+    marginBottom: 8,
   },
-  buttonRow: {
+  todoRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 30,
+    alignItems: "center",
+    marginBottom: 8,
+    gap: 8,
   },
-  cancelButton: {
-    padding: 12,
-    borderWidth: 1,
-    borderColor: "black",
+  todoGroup: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+  },
+  todoGroupText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 12,
+  },
+  projectRow: {
+    flexDirection: "row",
+    gap: 12,
+    marginBottom: 12,
+  },
+  projectBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     borderRadius: 8,
-    flex: 1,
-    marginRight: 8,
   },
-  saveButton: {
-    padding: 12,
-    backgroundColor: "black",
-    borderRadius: 8,
-    flex: 1,
-    marginLeft: 8,
+  projectGroupText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
-  cancelText: { textAlign: "center", color: "black", fontWeight: "bold" },
-  saveText: { textAlign: "center", color: "white", fontWeight: "bold" },
+  projectTitle: {
+    fontWeight: "bold",
+  },
+  projectMembers: {
+    fontSize: 12,
+    color: "#555",
+  },
 });
