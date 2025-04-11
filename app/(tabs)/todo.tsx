@@ -16,6 +16,14 @@ type Task = {
 };
 
 export default function TodoScreen() {
+  const [selectedGroup, setSelectedGroup] = useState("Sport 8c");
+
+  const groups = [
+    { name: "Sport 8c", color: "#479e94" },
+    { name: "Mathe 8d", color: "#d15b5b" },
+    { name: "Mathe 10e", color: "#4f83cc" },
+  ];
+
   const [boardName] = useState("Sport 8c");
   const [goal] = useState("Ausflug Skilaufen");
 
@@ -53,16 +61,32 @@ export default function TodoScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
+      {/* {Header} */}
       <View style={styles.header}>
-        <View style={styles.boardBadge}>
-          <Text style={styles.boardText}>{boardName}</Text>
+        <View style={styles.groupRow}>
+          {groups.map((group) => (
+            <TouchableOpacity
+              key={group.name}
+              onPress={() => setSelectedGroup(group.name)}
+              style={[
+                styles.groupBadge,
+                {
+                  backgroundColor: group.color,
+                  opacity: selectedGroup === group.name ? 1 : 0.5,
+                },
+              ]}
+            >
+              <Text style={styles.groupBadgeText}>{group.name}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
-        <Text style={styles.goal}>Ziel: {goal}</Text>
         <TouchableOpacity style={styles.headerButton}>
           <Text style={styles.plus}>＋</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Ziel separat */}
+      <Text style={styles.goal}>Ziel: {goal}</Text>
 
       {/* Columns */}
       <View style={styles.columnsContainer}>
@@ -85,6 +109,23 @@ export default function TodoScreen() {
 }
 
 const styles = StyleSheet.create({
+  groupRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    marginBottom: 18,
+    marginTop: 8,
+  },
+  groupBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    marginRight: 8,
+  },
+  groupBadgeText: {
+    color: "white",
+    fontWeight: "bold",
+  },
   container: { padding: 16, backgroundColor: "white" },
   header: {
     flexDirection: "row",
