@@ -3,3 +3,4 @@ export const studentData: Record<string, string[]> = {
   "Mathe 10d": ["Leonie", "Max", "Sophie", "Timo"],
   "Sport 7a": ["Felix", "Sarah", "Nora", "Jonas"],
 };
+

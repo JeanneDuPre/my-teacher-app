@@ -24,16 +24,44 @@ const todoItems = [
   { title: "Sportzeugkontrolle abschließen", done: false },
 ];
 
-const teacherTools = [
-  "Info",
-  "Listen",
-  "Bemerkungen",
+/* Klassenlehrer Optionen */
+const teacherTools: ToolKey[] = [
   "Anwesenheit",
+  "Bemerkungen",
+  "Info",
   "Noten",
-  "SEL Ziel",
-  "SchülerIn-View",
+  "Schuelerakte",
+  "Ziel",
   "Zeugnis",
 ];
+
+type ValidRoutes =
+  | "/klassen/info"
+  | "/klassen/anwesenheit"
+  | "/klassen/bemerkungen"
+  | "/klassen/zeugnis"
+  | "/klassen/schuelerakte"
+  | "/klassen/ziel"
+  | "/klassen/noten";
+
+type ToolKey =
+  | "Info"
+  | "Anwesenheit"
+  | "Bemerkungen"
+  | "Zeugnis"
+  | "Schuelerakte"
+  | "Ziel"
+  | "Noten";
+
+const routeMap: Record<ToolKey, ValidRoutes> = {
+  Info: "/klassen/info",
+  Anwesenheit: "/klassen/anwesenheit",
+  Bemerkungen: "/klassen/bemerkungen",
+  Zeugnis: "/klassen/zeugnis",
+  Schuelerakte: "/klassen/schuelerakte",
+  Ziel: "/klassen/ziel",
+  Noten: "/klassen/noten",
+};
 
 const events = [
   {
@@ -208,9 +236,18 @@ export default function AllesScreen() {
         <Text style={styles.sectionTitle}>Klassenlehrer der Klasse 10d</Text>
         <View style={styles.toolGrid}>
           {teacherTools.map((tool) => (
-            <View key={tool} style={styles.toolButton}>
+            <TouchableOpacity
+              key={tool}
+              onPress={() =>
+                router.push({
+                  pathname: routeMap[tool],
+                  params: { group: "10d" },
+                })
+              }
+              style={styles.toolButton}
+            >
               <Text style={styles.toolText}>{tool}</Text>
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
       </View>

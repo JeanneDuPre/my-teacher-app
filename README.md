@@ -42,11 +42,17 @@ Screens:
    6. Push-Benachrichtigung, wenn man zu einem Event eingeladen wurde
 
 4. Anwesenheit:
+
    - Daten aus einer JSON rauslesen-> Supabase als nächstes
+   - Daten von lessn zu anwesenheit übergeben
+
+5. Info-Seite
+   - ID vor Schüler
+   - Dynamisches Auslesen
+   - Problem: Edit Button funktioniert nicht -> cannot read property "vorname" of undefined!!!
 
 Was noch fehlt:
 
-- Info-Seite
 - Bemerkungen-Seite
 - Noten eintragen für Test, KA, Mitarbeit
 - Inhalt der Stunde eintragen
