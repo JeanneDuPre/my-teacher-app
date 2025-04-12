@@ -40,3 +40,13 @@ Screens:
    4. unter anstehende Events-> Blog anstehende KA in deinen Lerngruppen-> diese Woche, nächste Woche, übernächste Woche
    5. anklicken von anstehenden Events möglich, um sie zu bearbeiten oder zu löschen
    6. Push-Benachrichtigung, wenn man zu einem Event eingeladen wurde
+
+4. Anwesenheit:
+   - Daten aus einer JSON rauslesen-> Supabase als nächstes
+
+Was noch fehlt:
+
+- Info-Seite
+- Bemerkungen-Seite
+- Noten eintragen für Test, KA, Mitarbeit
+- Inhalt der Stunde eintragen

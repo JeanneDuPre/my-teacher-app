@@ -82,10 +82,11 @@ const colorMap: Record<string, string> = {
   "Mathe 10d": "#e91e63",
   Café: "#000000",
 };
-// weiterleiten zu einer anderen Seite
-const router = useRouter();
 
 export default function AllesScreen() {
+  // weiterleiten zu einer anderen Seite
+  const router = useRouter();
+
   return (
     <ScrollView style={styles.container}>
       {/* Klassen */}

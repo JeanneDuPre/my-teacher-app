@@ -9,15 +9,14 @@ import { useLocalSearchParams } from "expo-router";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
-// weiterleiten zu einer anderen Seite
-const router = useRouter();
-
 export default function LessonScreen() {
   const { date, time, className } = useLocalSearchParams<{
     date?: string;
     time?: string;
     className?: string;
   }>();
+  // weiterleiten zu einer anderen Seite
+  const router = useRouter();
 
   return (
     <View>
@@ -26,14 +25,19 @@ export default function LessonScreen() {
         style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}
       >
         <Ionicons name="arrow-back" size={24} color="black" />
-        <Text style={{ marginLeft: 8, fontSize: 16 }}>Zurück</Text>
+        <Text style={{ marginLeft: 8, fontSize: 16 }}>Home</Text>
       </TouchableOpacity>
 
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        keyboardShouldPersistTaps="handled"
+      >
         <Text style={styles.heading}>
           Unterrichtsreihe {className} - {date} - {time}
         </Text>
 
+        {/* Anzeige der Unterrichtsreihe */}
         <View style={styles.topicRow}>
           <View style={styles.topicCard}>
             <Text style={styles.topicLabel}>Thema der letzten Stunde</Text>
@@ -50,10 +54,13 @@ export default function LessonScreen() {
           </View>
         </View>
 
+        {/* Anzeige der Organisation am Anfang der Stunde */}
         <Text style={styles.sectionTitle}>Organisatorisches</Text>
 
         <View style={styles.item}>
-          <Text>🟢 Anwesenheit heute</Text>
+          <TouchableOpacity onPress={() => router.push("/klassen/anwesenheit")}>
+            <Text>🟢 Anwesenheit heute</Text>
+          </TouchableOpacity>
           <Text>15 Anwesend, 2 Abwesend</Text>
         </View>
 
@@ -87,7 +94,7 @@ export default function LessonScreen() {
           <Text>Test / KA</Text>
         </View>
 
-        <Text style={styles.sectionTitle}>Zu bewertende Schüler</Text>
+        <Text style={styles.sectionTitle}>Leistungsbewertung</Text>
 
         {["Annette", "Maria", "Luise", "Anton", "Hanna"].map((name) => (
           <View key={name} style={styles.ratingRow}>
@@ -101,7 +108,7 @@ export default function LessonScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff", padding: 16 },
+  container: { backgroundColor: "#fff", padding: 16 },
   heading: { fontSize: 20, fontWeight: "bold", marginBottom: 12 },
   sectionTitle: {
     fontSize: 16,
