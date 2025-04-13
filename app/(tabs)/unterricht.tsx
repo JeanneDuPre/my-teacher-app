@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,24 +7,18 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-
-const groupList = [
-  { group: "Sport 7a", color: "#f4a742" },
-  { group: "Sport 8c", color: "#479e94" },
-  { group: "Mathe 8c", color: "#9b59b6" },
-  { group: "Sport 10d", color: "#e91e63" },
-  { group: "Sport 8b", color: "#4f83cc" },
-];
-
-const lessonPlan = [
-  { thema: "", date: "" },
-  { thema: "", date: "" },
-  { thema: "", date: "" },
-  { thema: "FERIEN", date: "" },
-];
+/* API Ferienzeit */
+import { fetchFerien, Ferienzeit } from "../utils/ferien";
+import KompaktKalendar from "@/components/KompaktKalendar";
 
 export default function UnterrichtScreen() {
-  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
+  /* API Ferienzeit Berlin */
+  const [ferienDaten, setFerienDaten] = useState<Ferienzeit[]>([]);
+  useEffect(() => {
+    fetchFerien("BE").then((ferien) => {
+      setFerienDaten(ferien);
+    });
+  }, []);
 
   const groupList = [
     { group: "Sport 7a", color: "#f4a742" },
@@ -34,103 +28,72 @@ export default function UnterrichtScreen() {
     { group: "Sport 8b", color: "#4f83cc" },
   ];
 
-  const lessonPlansByGroup: Record<string, { thema: string; date?: string }[]> =
-    {
-      "Sport 8c": [
-        { thema: "Kondition" },
-        { thema: "Koordination" },
-        { thema: "" },
-      ],
-      "Sport 7a": [{ thema: "Ballspiele" }, { thema: "" }],
-      "Mathe 8c": [{ thema: "Geometrie" }, { thema: "Funktionen" }],
-      "Sport 10d": [{ thema: "Teamwork" }, { thema: "Reflexion" }],
-      "Sport 8b": [{ thema: "" }, { thema: "" }],
-    };
-
+  const lessonPlan = [
+    { thema: "", date: "" },
+    { thema: "", date: "" },
+    { thema: "", date: "" },
+    { thema: "FERIEN", date: "" },
+  ];
+  const lessonPlansByGroup: Record<string, { thema: string }[]> = {
+    "Sport 8c": [
+      { thema: "Kondition" },
+      { thema: "Koordination" },
+      { thema: "" },
+      { thema: "" },
+      { thema: "" },
+    ],
+    "Sport 7a": [{ thema: "Thema 1" }, { thema: "" }, { thema: "" }],
+    "Mathe 8c": [{ thema: "Geometrie" }, { thema: "Funktionen" }],
+    "Sport 10d": [
+      { thema: "Aufwärmen" },
+      { thema: "Teamwork" },
+      { thema: "Reflexion" },
+    ],
+    "Sport 8b": [{ thema: "" }, { thema: "" }],
+  };
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   return (
-    <View>
-      <ScrollView style={styles.container}>
-        {/* Unterrichtsvorbereitung */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Unterrichtsvorbereitung</Text>
-            <TouchableOpacity style={styles.plusButton}>
-              <Text style={styles.plus}>＋</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.subText}>14 Tage</Text>
-
-          {groupList.map((item, idx) => {
-            const lessons = lessonPlansByGroup[item.group] || [];
-            const total = lessons.length;
-            const prepared = lessons.filter(
-              (l) => l.thema && l.thema !== ""
-            ).length;
-            const percent = total > 0 ? prepared / total : 0;
-
-            return (
-              <TouchableOpacity
-                key={idx}
-                onPress={() => setSelectedGroup(item.group)}
-                style={styles.prepRow}
-              >
-                <View
-                  style={[styles.groupBadge, { backgroundColor: item.color }]}
-                >
-                  <Text style={styles.badgeText}>{item.group}</Text>
-                </View>
-                <View style={styles.progressBar}>
-                  <View style={[styles.progressDone, { flex: percent }]} />
-                  <View
-                    style={[styles.progressRemaining, { flex: 1 - percent }]}
-                  />
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+    <ScrollView style={styles.container}>
+      {/* Unterrichtsvorbereitung */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Unterrichtsvorbereitung</Text>
+          <TouchableOpacity style={styles.plusButton}>
+            <Text style={styles.plus}>＋</Text>
+          </TouchableOpacity>
         </View>
+        <Text style={styles.subText}>14 Tage</Text>
 
-        {/* Unterrichtsübersicht */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>
-              Unterricht der Klasse 8c Sport
-            </Text>
-            <TouchableOpacity style={styles.plusButton}>
-              <Text style={styles.plus}>＋</Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.subText}>5/20 Stunden geplant</Text>
-          <Text style={styles.subText}>3 Stunden bis zu den Osterferien</Text>
+        {groupList.map((item, idx) => {
+          const lessons = lessonPlansByGroup[item.group] || [];
+          const total = lessons.length;
+          const prepared = lessons.filter(
+            (l) => l.thema && l.thema !== ""
+          ).length;
+          const percent = total > 0 ? prepared / total : 0;
 
-          {lessonPlan.map((lesson, idx) => (
-            <View key={idx} style={styles.lessonItem}>
-              {lesson.thema === "FERIEN" ? (
-                <View style={styles.ferienBadge}>
-                  <Text style={styles.ferienBadgeText}>Thema:</Text>
-                </View>
-              ) : (
-                <Text style={styles.lessonNumber}>{idx + 1}.</Text>
-              )}
-              <View style={{ flex: 1 }}>
-                <Text style={styles.label}>Thema:</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Inhalt"
-                  defaultValue={lesson.thema === "FERIEN" ? "FERIEN" : ""}
-                  editable={lesson.thema !== "FERIEN"}
-                />
-                <Text style={styles.label}>Datum:</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Datum"
-                  editable={lesson.thema !== "FERIEN"}
+          return (
+            <TouchableOpacity
+              key={idx}
+              onPress={() => setSelectedGroup(item.group)}
+              style={styles.prepRow}
+            >
+              <View
+                style={[styles.groupBadge, { backgroundColor: item.color }]}
+              >
+                <Text style={styles.badgeText}>{item.group}</Text>
+              </View>
+              <View style={styles.progressBar}>
+                <View style={[styles.progressDone, { flex: percent }]} />
+                <View
+                  style={[styles.progressRemaining, { flex: 1 - percent }]}
                 />
               </View>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+
       {selectedGroup && (
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
@@ -154,7 +117,6 @@ export default function UnterrichtScreen() {
                   style={styles.input}
                   defaultValue={lesson.thema}
                   editable={true}
-                  placeholder="Thematik"
                 />
                 <Text style={styles.label}>Datum:</Text>
                 <TextInput style={styles.input} placeholder="Datum" />
@@ -163,7 +125,7 @@ export default function UnterrichtScreen() {
           ))}
         </View>
       )}
-    </View>
+    </ScrollView>
   );
 }
 

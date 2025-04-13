@@ -108,7 +108,7 @@
 //     borderRadius: 6,
 //   },
 // });
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -121,47 +121,131 @@ import {
   Modal,
 } from "react-native";
 import { Calendar } from "react-native-calendars";
+import { fetchFerien, Ferienzeit } from "../utils/ferien"; // oder relativer Pfad ../utils/ferien
 
 export default function KalendarScreen() {
+  /* Modal Kategorien */
+  const [category, setCategory] = useState<
+    "Studientag" | "Brückentag" | "Prüfungstag"
+  >("Studientag");
+
+  /* Ferienzeiten laden */
+  function generateFerienMarkedDates(
+    ferien: Ferienzeit[]
+  ): Record<string, any> {
+    const marked: Record<string, any> = {};
+
+    ferien.forEach(({ start, end }) => {
+      const startDate = new Date(start);
+      const endDate = new Date(end);
+
+      for (
+        let d = new Date(startDate);
+        d <= endDate;
+        d.setDate(d.getDate() + 1)
+      ) {
+        const iso = d.toISOString().split("T")[0];
+        marked[iso] = {
+          disabled: true,
+          marked: true,
+          dotColor: "red",
+          disableTouchEvent: true,
+        };
+      }
+    });
+
+    return marked;
+  }
+
+  const [markedDates, setMarkedDates] = useState<Record<string, any>>({});
+  useEffect(() => {
+    fetchFerien("BE").then((ferien) => {
+      const ferienMarked = generateFerienMarkedDates(ferien);
+      setMarkedDates(ferienMarked);
+    });
+  }, []);
+
   const [selectedDate, setSelectedDate] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState("");
   const [group, setGroup] = useState("");
-  const [entries, setEntries] = useState<
-    { date: string; title: string; group: string }[]
-  >([]);
+  type EventEntry = {
+    date: string;
+    title: string;
+    group: string;
+    category: "Studientag" | "Brückentag" | "Prüfungstag";
+    color: string;
+  };
+
+  const [entries, setEntries] = useState<EventEntry[]>([]);
 
   const handleAdd = () => {
     if (selectedDate && title && group) {
-      setEntries((prev) => [...prev, { date: selectedDate, title, group }]);
+      const colorMap: Record<string, string> = {
+        Studientag: "yellow",
+        Brückentag: "orange",
+        Prüfungstag: "purple",
+      };
+
+      const newEntry = {
+        date: selectedDate,
+        title,
+        group,
+        category,
+        color: colorMap[category],
+      };
+
+      setEntries((prev) => [...prev, newEntry]);
       setTitle("");
       setGroup("");
+      setCategory("Studientag");
       setModalVisible(false);
     }
   };
 
   const filteredEntries = entries.filter((e) => e.date === selectedDate);
-  const events = [
+  const [events, setEvents] = useState<
     {
-      date: "2024-12-23",
-      title: "Weihnachtsferien",
-      range: "23.12.–01.01",
-      color: "#b3dcb2",
-    },
-    {
-      date: "2025-01-02",
-      title: "Schulstart",
-      color: "#f0f0f0",
-    },
-    {
-      date: "2025-01-07",
-      title: "Gesamtkonferenz",
-      time: "15:30–16:30",
-      color: "#f0f0f0",
-    },
-  ];
+      date: string;
+      title: string;
+      range?: string;
+      time?: string;
+      color?: string;
+    }[]
+  >([]);
 
-  // Markierungen für den Kalender
+  useEffect(() => {
+    fetchFerien("BE").then((ferien) => {
+      const ferienMarked = generateFerienMarkedDates(ferien);
+      setMarkedDates(ferienMarked);
+
+      // 🟩 Konvertiere Ferien zu Events
+      const ferienEvents = ferien
+        .map((f) => ({
+          date: f.start,
+          title: f.name,
+          range: `${formatDate(f.start)}–${formatDate(f.end)}`,
+          color: "red",
+        }))
+        .filter((e) => {
+          const today = new Date();
+          const in14 = new Date();
+          in14.setDate(today.getDate() + 21); /* 14 Tage oder 21 Tage */
+          return new Date(e.date) >= today && new Date(e.date) <= in14;
+        });
+
+      setEvents(ferienEvents);
+    });
+  }, []);
+
+  function formatDate(dateString: string) {
+    const d = new Date(dateString);
+    return `${d.getDate().toString().padStart(2, "0")}.${(d.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}`;
+  }
+
+  /*   // Markierungen für den Kalender
   const markedDates = events.reduce((acc, event) => {
     acc[event.date] = {
       marked: true,
@@ -170,7 +254,7 @@ export default function KalendarScreen() {
       selectedColor: event.color || "#d0f0c0",
     };
     return acc;
-  }, {} as any);
+  }, {} as any); */
 
   return (
     <View style={styles.container}>
@@ -193,7 +277,7 @@ export default function KalendarScreen() {
         style={styles.calendar}
         theme={{
           arrowColor: "#000",
-          todayTextColor: "#4CAF50",
+          todayTextColor: "green",
           selectedDayBackgroundColor: "#4CAF50",
         }}
       />
@@ -217,6 +301,32 @@ export default function KalendarScreen() {
             style={styles.input}
           />
 
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              marginVertical: 10,
+            }}
+          >
+            {["Studientag", "Brückentag", "Prüfungstag"].map((cat) => (
+              <TouchableOpacity
+                key={cat}
+                onPress={() => setCategory(cat as any)}
+                style={{
+                  padding: 8,
+                  borderRadius: 6,
+                  borderWidth: 1,
+                  borderColor: category === cat ? "#000" : "#ccc",
+                  backgroundColor: category === cat ? "#000" : "#fff",
+                }}
+              >
+                <Text style={{ color: category === cat ? "#fff" : "#000" }}>
+                  {cat}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
           <Button title="Speichern" onPress={handleAdd} />
           <Pressable
             onPress={() => setModalVisible(false)}
@@ -227,16 +337,44 @@ export default function KalendarScreen() {
 
           <Text style={styles.heading}>Einträge:</Text>
           <FlatList
-            data={filteredEntries}
-            keyExtractor={(_, index) => index.toString()}
+            data={entries}
+            keyExtractor={(item, index) => item.date + item.title + index}
             renderItem={({ item }) => (
-              <Text style={styles.entry}>
-                📌 {item.title} ({item.group})
-              </Text>
+              <View
+                style={[
+                  styles.eventRow,
+                  { backgroundColor: item.color || "#f0f0f0" },
+                ]}
+              >
+                <View style={styles.eventLeft}>
+                  <Text style={[styles.eventDate, { color: "white" }]}>
+                    {item.date}
+                  </Text>
+                  <Text style={[styles.eventTitle, { color: "white" }]}>
+                    {item.title} ({item.group})
+                  </Text>
+                </View>
+              </View>
             )}
           />
         </View>
       </Modal>
+
+      {/* Legende */}
+      <View style={styles.legendContainer}>
+        <View style={styles.legendItem}>
+          <View style={[styles.dot, { backgroundColor: "red" }]} />
+          <Text>Ferien</Text>
+        </View>
+        <View style={styles.legendItem}>
+          <View style={[styles.dot, { backgroundColor: "yellow" }]} />
+          <Text>Studientag</Text>
+        </View>
+        <View style={styles.legendItem}>
+          <View style={[styles.dot, { backgroundColor: "purple" }]} />
+          <Text>Prüfungstag (MSA, BBR)</Text>
+        </View>
+      </View>
 
       {/* Events */}
       <View style={styles.eventsHeader}>
@@ -253,14 +391,24 @@ export default function KalendarScreen() {
           <View
             style={[
               styles.eventRow,
-              { backgroundColor: item.color || "#f0f0f0" },
+              {
+                backgroundColor: item.color || "#f0f0f0",
+              },
             ]}
           >
             <View style={styles.eventLeft}>
-              <Text style={styles.eventDate}>{item.range || item.date}</Text>
-              <Text style={styles.eventTitle}>{item.title}</Text>
+              <Text style={[styles.eventDate, { color: "white" }]}>
+                {item.range || item.date}
+              </Text>
+              <Text style={[styles.eventTitle, { color: "white" }]}>
+                {item.title}
+              </Text>
             </View>
-            {item.time && <Text style={styles.eventTime}>{item.time}</Text>}
+            {item.time && (
+              <Text style={[styles.eventTime, { color: "white" }]}>
+                {item.time}
+              </Text>
+            )}
           </View>
         )}
       />
@@ -357,4 +505,22 @@ const styles = StyleSheet.create({
   },
   modalContent: { flex: 1, padding: 20 },
   heading: { fontSize: 18, fontWeight: "bold", marginVertical: 10 },
+
+  /* Legende */
+  legendContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  legendItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
 });

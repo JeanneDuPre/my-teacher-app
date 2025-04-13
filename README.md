@@ -13,8 +13,9 @@ Screens:
 
    Layout alle:
 
-   1. - umranden in Schwarz
-   2. weitere Sektion einführen: Fachlehrerinfo-> Telefonnummern der Schüler anzeigen; WAS NOCH?
+   1. - umranden in Schwarz (gut gelungen bei Unterricht)
+   2. Klassenlehrer-> Zeugnis löschen-> Einbau in Noten mit Export-Funktion
+   3. weitere Sektion einführen: Fachlehrerinfo-> Telefonnummern der Schüler anzeigen; WAS NOCH?
 
    Trello-Screen: TODO
 
@@ -27,7 +28,8 @@ Screens:
 
    1. Modal anpassen:
 
-      - Fragen, ob Event, ToDo, KA, LEK
+      - Admin: Studientag eintragen (Schulleitung), Prüfungen (Mittelstufenkoordinator)
+      - Lehrer-> Fragen, ob Event, ToDo, KA, LEK -> erste Auswahl festlegen
 
         - Event: Datum, Uhrzeit, Ort, Titel, Inhalt, Bild hochladen, Einladung von SL, KK (optional)
         - ToDo: Datum, Uhrzeit (optional), Ort (optional), Titel, Inhalt, Klasse (optional), weitere Lehrer (optional), Ziel (optional), Bild hochladen (optional)
@@ -36,11 +38,12 @@ Screens:
         - LEK: Datum, Uhrzeit, Raum, Klasse, Fach
           -> Button "Cancel, Save Changes"
 
-   2. heutiger Tag im Kalendar anzeigen
-   3. Ferien für Berlin eintragen (automatisch) SPÄTER für ADMIN auslagern
-   4. unter anstehende Events-> Blog anstehende KA in deinen Lerngruppen-> diese Woche, nächste Woche, übernächste Woche
-   5. anklicken von anstehenden Events möglich, um sie zu bearbeiten oder zu löschen
-   6. Push-Benachrichtigung, wenn man zu einem Event eingeladen wurde
+   2. Ferien für Berlin eintragen (automatisch) ERLEDIGT -> SPÄTER für ADMIN auslagern
+   3. unter anstehende Events-> Blog anstehende KA in deinen Lerngruppen-> diese Woche, nächste Woche, übernächste Woche
+   4. anklicken von anstehenden Events möglich, um sie zu bearbeiten oder zu löschen
+   5. Push-Benachrichtigung, wenn man zu einem Event eingeladen wurde
+   6. Anzeigetext der API-Wiedergabe an Rechtschreibung anpassen
+   7. Kubernetes-> nur einmal im Jahr laden
 
 4. Anwesenheit:
 
