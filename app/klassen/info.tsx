@@ -51,6 +51,23 @@ export default function InfoScreen() {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editData, setEditData] = useState<any>({});
   const [modalVisible, setModalVisible] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
+  const [deleteConfirmVisible, setDeleteConfirmVisible] = useState(false);
+
+  const handleDeleteRequest = (index: number) => {
+    setDeleteIndex(index);
+    setDeleteConfirmVisible(true);
+  };
+
+  const confirmDelete = () => {
+    if (deleteIndex !== null) {
+      const updated = [...students];
+      updated.splice(deleteIndex, 1);
+      setStudents(updated);
+    }
+    setDeleteConfirmVisible(false);
+    setDeleteIndex(null);
+  };
 
   const handleDelete = (index: number) => {
     const updated = [...students];
@@ -174,7 +191,7 @@ export default function InfoScreen() {
                   <Text style={styles.buttonText}>Edit</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => handleDelete(index)}
+                  onPress={() => handleDeleteRequest(index)}
                   style={styles.deleteButton}
                 >
                   <Text style={styles.buttonText}>Delete</Text>
@@ -186,10 +203,9 @@ export default function InfoScreen() {
         {modalVisible && editData && (
           <Modal visible={modalVisible} animationType="slide">
             <ScrollView style={{ padding: 20 }}>
-              <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+              <Text style={{ fontSize: 18, fontWeight: "bold", marginTop: 50 }}>
                 Schüler bearbeiten
               </Text>
-
               <Text>Vorname:</Text>
               <TextInput
                 value={editData.vorname ?? ""}
@@ -198,7 +214,6 @@ export default function InfoScreen() {
                 }
                 style={styles.input}
               />
-
               <Text>Nachname:</Text>
               <TextInput
                 value={editData.nachname}
@@ -207,8 +222,86 @@ export default function InfoScreen() {
                 }
                 style={styles.input}
               />
-
-              {/* weitere Felder kannst du analog ergänzen */}
+              <Text>Geschlecht:</Text>
+              <TextInput
+                value={editData.geschlecht}
+                onChangeText={(text) =>
+                  setEditData({ ...editData, geschlecht: text })
+                }
+                style={styles.input}
+              />
+              <Text>Geburtsdatum:</Text>
+              <TextInput
+                value={editData.geburtsdatum}
+                onChangeText={(text) =>
+                  setEditData({ ...editData, geburtsdatum: text })
+                }
+                style={styles.input}
+              />
+              <Text>Mutter:</Text>
+              <TextInput
+                value={editData.mutter}
+                onChangeText={(text) =>
+                  setEditData({ ...editData, mutter: text })
+                }
+                style={styles.input}
+              />
+              <Text>Handy (M):</Text>
+              <TextInput
+                value={editData.mutterHandy}
+                onChangeText={(text) =>
+                  setEditData({ ...editData, mutterHandy: text })
+                }
+                style={styles.input}
+              />
+              <Text>E-Mail (M):</Text>
+              <TextInput
+                value={editData.mutterMail}
+                onChangeText={(text) =>
+                  setEditData({ ...editData, mutterMail: text })
+                }
+                style={styles.input}
+              />
+              <Text>Vater:</Text>
+              <TextInput
+                value={editData.vater}
+                onChangeText={(text) =>
+                  setEditData({ ...editData, vater: text })
+                }
+                style={styles.input}
+              />
+              <Text>Handy (V)</Text>
+              <TextInput
+                value={editData.vaterHandy}
+                onChangeText={(text) =>
+                  setEditData({ ...editData, vaterHandy: text })
+                }
+                style={styles.input}
+              />
+              <Text>Email (V):</Text>
+              <TextInput
+                value={editData.vaterMail}
+                onChangeText={(text) =>
+                  setEditData({ ...editData, vaterMail: text })
+                }
+                style={styles.input}
+              />
+              <Text>Geburtsort:</Text>
+              <TextInput
+                value={editData.geburtsort}
+                onChangeText={(text) =>
+                  setEditData({ ...editData, geburtsort: text })
+                }
+                style={styles.input}
+              />
+              <Text>Geburtsland:</Text>
+              <TextInput
+                value={editData.geburtsland}
+                onChangeText={(text) =>
+                  setEditData({ ...editData, geburtsland: text })
+                }
+                style={styles.input}
+              />
 
               <View style={{ flexDirection: "row", marginTop: 20, gap: 12 }}>
                 <TouchableOpacity onPress={saveEdit} style={styles.saveButton}>
@@ -227,6 +320,40 @@ export default function InfoScreen() {
             </ScrollView>
           </Modal>
         )}
+        <Modal visible={deleteConfirmVisible} transparent animationType="fade">
+          <View style={styles.modalOverlay}>
+            <View style={styles.confirmBox}>
+              <Text style={styles.modalTitle}>Schüler wirklich löschen?</Text>
+              <Text style={styles.modalText}>
+                Möchtest du{" "}
+                <Text style={{ fontWeight: "bold", color: "black" }}>
+                  {students[deleteIndex ?? 0]?.vorname}{" "}
+                  {students[deleteIndex ?? 0]?.nachname}
+                </Text>{" "}
+                wirklich löschen?
+              </Text>
+
+              <View style={styles.buttonRow}>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => {
+                    setDeleteConfirmVisible(false);
+                    setDeleteIndex(null);
+                  }}
+                >
+                  <Text style={styles.buttonText}>Nein</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={confirmDelete}
+                >
+                  <Text style={styles.buttonText}>Ja</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     </ScrollView>
   );
@@ -282,9 +409,11 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   deleteButton: {
+    flex: 1,
     backgroundColor: "#e74c3c",
-    padding: 4,
-    borderRadius: 4,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: "center",
   },
   buttonText: {
     color: "white",
@@ -304,12 +433,42 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     flex: 1,
     alignItems: "center",
+    marginBottom: 100,
   },
   cancelButton: {
-    backgroundColor: "#ccc",
-    padding: 10,
-    borderRadius: 8,
     flex: 1,
+    borderWidth: 1,
+    borderColor: "black",
+    backgroundColor: "#fff",
+    paddingVertical: 12,
+    borderRadius: 8,
     alignItems: "center",
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.4)",
+  },
+  confirmBox: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 20,
+    width: "80%",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  modalText: {
+    fontSize: 14,
+    marginBottom: 20,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 12,
+    marginTop: 16,
   },
 });

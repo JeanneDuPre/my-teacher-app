@@ -14,6 +14,7 @@ Screens:
    Layout alle:
 
    1. - umranden in Schwarz
+   2. weitere Sektion einführen: Fachlehrerinfo-> Telefonnummern der Schüler anzeigen; WAS NOCH?
 
    Trello-Screen: TODO
 
@@ -47,12 +48,33 @@ Screens:
    - Daten von lessn zu anwesenheit übergeben
 
 5. Info-Seite
+
    - ID vor Schüler
    - Dynamisches Auslesen
-   - Problem: Edit Button funktioniert nicht -> cannot read property "vorname" of undefined!!!
+   - Layout: Button anpassen für Modal Delete und Modal Edit-> Button-Layout insgesamt überdenken
+
+6. Unterricht-Seite
+   - Vorbereitung legt sich über Balken TODO
+   - Plus von hier als style übernehmen
 
 Was noch fehlt:
 
-- Bemerkungen-Seite
+- Bemerkungen-Seite: Dashboard erstellen mit wichtigen Hinweisen
+
+  - Insgesamt positive und negative Bemerkungen; Info
+  - Schüler, in welchen Stunden
+  - einzelne Bemerkungen in Schülerakte übertragen können
+  - Layout: positive - Schüler - negative
+
+- Schuelerakte strukturieren:
+
+  - Dokumentation von Kontakt mit Eltern: Anruf, Grund, Datum, Notiz
+  - Schulversäumnisanzeigen automatisch ausfüllen-> in Akte eintragen
+  - Zeugnisse in Akte hineinlegen
+  - SEL-Gespräche hinzufügen
+  - wichtige Bemerkungen eintragen, in welchen Tab?
+
+- KA -> Noten-> Übersicht für Mathe, Englisch, Deutsch generieren ()
+
 - Noten eintragen für Test, KA, Mitarbeit
 - Inhalt der Stunde eintragen
