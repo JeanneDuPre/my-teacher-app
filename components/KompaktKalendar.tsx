@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+/* import React, { useEffect, useState } from "react";
 import { Calendar } from "react-native-calendars";
-import { fetchFerien, Ferienzeit } from "@utils/ferien";
+import { fetchFerien, Ferienzeit } from "../utils/ferien";
 
 type Props = {
   onSelect: (date: string) => void;
@@ -59,3 +59,4 @@ export default function KompaktKalendar({ onSelect, selectedDate }: Props) {
     />
   );
 }
+ */

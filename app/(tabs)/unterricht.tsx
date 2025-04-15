@@ -9,7 +9,7 @@ import {
 } from "react-native";
 /* API Ferienzeit */
 import { fetchFerien, Ferienzeit } from "../utils/ferien";
-import KompaktKalendar from "@/components/KompaktKalendar";
+/* import KompaktKalendar from "@/components/KompaktKalendar"; */
 
 export default function UnterrichtScreen() {
   /* API Ferienzeit Berlin */
